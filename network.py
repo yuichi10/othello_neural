@@ -91,7 +91,7 @@ def forward_propagation(X, parameters, activations):
 print("Load data")
 X, Y = load_data("data/train/X.txt", "data/train/Y.txt")
 activations = ["no use", "relu", "relu", "relu", "relu", "sigmoid"]
-layer_dims = [64, 100, 150, 100, 30, 3]
+layer_dims = [64, 100, 150, 100, 30, 65]
 
 print("initialize parameters")
 parameters = initialize_parameters(layer_dims)

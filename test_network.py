@@ -53,6 +53,14 @@ class TestNetwork(unittest.TestCase):
         A, cache = network.linear_activation_forward(A_prev, W, b, "sigmoid")
         assert np.allclose(A, ans)
 
+    def test_forward_propagation(self):
+        X = np.random.randn(5, 1)
+        activations = ["no use", "relu", "relu", "relu", "relu", "sigmoid"]
+        layer_dims = [5, 10, 15, 10, 3, 3]
+        parameters = network.initialize_parameters(layer_dims)
+        AL, cache = network.forward_propagation(X, parameters, activations)
+        self.assertEqual((3, 1), AL.shape)
+
 
 if __name__ == "__main__":
     unittest.main()
