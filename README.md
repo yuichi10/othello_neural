@@ -7,10 +7,10 @@
 
 それぞれのニューロンの数
 
-64 100 150 100 30 3
+64 100 150 100 80 65 
 
 input X はボードの状態
-教師の方に関しては打った場所の X Y あと passの三種類
+output Y はボードの打った場所を1にしたもの(passも含めて65通り)
 
 
 ###　実装すること
@@ -29,6 +29,8 @@ input X はボードの状態
   - dropout regularization(Inverted dropout) add keep-prb
   - (Early stopping)
 
+#### 改良
+- normalizing
 
 ## neural network の検証
 
