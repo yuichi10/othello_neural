@@ -88,6 +88,13 @@ def forward_propagation(X, parameters, activations):
     return AL, caches
 
 
+def compute_cost(AL, Y):
+    m = Y.shape[1]
+    cost = -np.sum(np.multiply(Y, np.log(AL)) + np.multiply((1 - Y), np.log(1 - AL))) / m
+    cost = np.squeeze(cost)
+    return cost
+
+
 print("Load data")
 X, Y = load_data("data/train/X.txt", "data/train/Y.txt")
 activations = ["no use", "relu", "relu", "relu", "relu", "sigmoid"]
@@ -98,4 +105,7 @@ parameters = initialize_parameters(layer_dims)
 
 print("forward propagation")
 AL, caches = forward_propagation(X, parameters, activations)
-print(AL)
+
+print("compute cost")
+cost = compute_cost(AL, Y)
+print(cost)

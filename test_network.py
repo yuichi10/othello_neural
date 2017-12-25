@@ -61,6 +61,12 @@ class TestNetwork(unittest.TestCase):
         AL, cache = network.forward_propagation(X, parameters, activations)
         self.assertEqual((3, 1), AL.shape)
 
+    def test_compute_cost(self):
+        AL = np.array([(0.999999, 0.999999), (0.2, 0.2), (0.3, 0.3)])
+        Y = np.array([(1, 1), (0.3, 0.3), (0.1, 0.1)])
+        cost = network.compute_cost(AL, Y)
+        self.assertEqual(cost, 1.0804375896281297)
+
 
 if __name__ == "__main__":
     unittest.main()
