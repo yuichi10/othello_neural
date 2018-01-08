@@ -3,6 +3,8 @@
 # やること
 ## neural networkの構築
 
+使うデータは [ここ](https://www.skatgame.net/mburo/ggs/game-archive/Othello/)
+
 5 layer くらいで最初やってみる
 
 それぞれのニューロンの数

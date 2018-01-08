@@ -28,11 +28,11 @@ def initialize_parameters(layer_dims, seed=None):
 def activation_forward(Z, activation):
     if activation == "sigmoid":
         A = calc.sigmoid(Z)
-        activation_cache = A
+        activation_cache = Z
         return A, activation_cache
     elif activation == "relu":
         A = calc.relu(Z)
-        activation_cache = A
+        activation_cache = Z
         return A, activation_cache
 
 
@@ -95,17 +95,65 @@ def compute_cost(AL, Y):
     return cost
 
 
-print("Load data")
-X, Y = load_data("data/train/X.txt", "data/train/Y.txt")
-activations = ["no use", "relu", "relu", "relu", "relu", "sigmoid"]
-layer_dims = [64, 100, 150, 100, 30, 65]
+def linear_back_propagation(dZ, cache):
+    m = dZ.shape[1]
+    A_prev, W, b = cache
+    dW = np.dot(dZ, A_prev.T) / m
+    db = np.sum(dZ, axis=1, keepdims=True) / m
+    da = np.dot(W.T, dZ)
+    return da, dW, db
 
-print("initialize parameters")
-parameters = initialize_parameters(layer_dims)
 
-print("forward propagation")
-AL, caches = forward_propagation(X, parameters, activations)
+def linear_activation_backward(dA, cache, activation):
+    linear_cache, activation_cache = cache
+    if activation == "sigmoid":
+        sigmoid_backward = calc.sigmoid_derivative(activation_cache)
+        dZ = np.multiply(dA, sigmoid_backward)
+        dA_prev, dw, db = linear_back_propagation(dZ, linear_cache)
+        return dA_prev, dw, db
+    elif activation == "relu":
+        relu_backward = calc.relu_derivative(activation_cache)
+        dZ = np.multiply(dA, relu_backward)
+        dA_prev, dw, db = linear_back_propagation(dZ, linear_cache)
+        return dA_prev, dw, db
 
-print("compute cost")
-cost = compute_cost(AL, Y)
-print(cost)
+
+def back_propagation(AL, Y, caches, activations):
+    grads = {}
+    L = len(caches)
+    dA_prev = - (np.divide(Y, AL) - np.divide(1 - Y, 1 - AL))
+    for l in reversed(range(L)):
+        cache = caches[l]
+        dA_prev, dW, db = linear_activation_backward(dA_prev, cache, activations[l+1])
+        grads["dA" + str(l + 1)] = dA_prev
+        grads["dW" + str(l + 1)] = dW
+        grads["db" + str(l + 1)] = db
+
+    return grads
+
+
+def update_parameters(parameters, grads, learning_rate):
+    L = len(parameters)
+    for l in range(1, L + 1):
+        parameters['W' + str(l)] = parameters['W' + str(l)] - learning_rate * grads["dW" + str(l)]
+        parameters['b' + str(l)] = parameters['b' + str(l)] - learning_rate * grads["db" + str(l)]
+    return parameters
+
+
+# print("Load data")
+# X, Y = load_data("data/train/X.txt", "data/train/Y.txt")
+# activations = ["no use", "relu", "relu", "relu", "relu", "sigmoid"]
+# layer_dims = [64, 100, 150, 100, 30, 65]
+#
+# print("initialize parameters")
+# parameters = initialize_parameters(layer_dims)
+#
+# print("forward propagation")
+# AL, caches = forward_propagation(X, parameters, activations)
+#
+# print("compute cost")
+# cost = compute_cost(AL, Y)
+# print(cost)
+#
+# print("backward propagation")
+# grads = back_propagation(AL, Y, caches, activations)

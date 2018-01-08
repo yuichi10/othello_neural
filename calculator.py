@@ -17,6 +17,4 @@ def relu(x):
 
 
 def relu_derivative(x):
-    if x > 0:
-        return 1
-    return 0
+    return x > 0

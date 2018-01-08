@@ -67,6 +67,53 @@ class TestNetwork(unittest.TestCase):
         cost = network.compute_cost(AL, Y)
         self.assertEqual(cost, 1.0804375896281297)
 
+    def test_linear_back_propagation(self):
+        dZ = np.array([(0.2, 0.3), (0.1, 0.9)])
+        A_prev = np.array([(0.1, 0.2), (0.4, 0.1), (0.2, 0.4)])
+        W = np.array([(0.1, 0.2, 0.1), (0.2, 0.3, 0.4)])
+        b = np.array(0.1)
+        linear_cache = (A_prev, W, b)
+
+        dA_prev_ans = np.array([(0.04,  0.21), (0.07, 0.33), (0.06, 0.39)])
+        dW_ans = np.array([(0.04, 0.055, 0.08), (0.095, 0.065, 0.19)])
+        db_ans = np.array([[0.25], [0.5]])
+
+        dA_prev, dW, db = network.linear_back_propagation(dZ, linear_cache)
+        assert np.allclose(dA_prev, dA_prev_ans)
+        assert np.allclose(dW, dW_ans)
+        assert np.allclose(db, db_ans)
+
+    def test_linear_activation_backward(self):
+        # test backward sigmoid
+        A_prev = np.array([(0.1, 0.2), (0.4, 0.1), (0.2, 0.4)])
+        W = np.array([(0.1, 0.2, 0.1), (0.2, 0.3, 0.4)])
+        b = np.array([[0.1], [0.2]])
+        AL, cache = network.linear_activation_forward(A_prev, W, b, "sigmoid")
+        dA_prev, dW, db = network.linear_activation_backward(AL, cache, "sigmoid")
+
+        dA_prev_ans = np.array([[0.04253823, 0.04244763], [0.07063563, 0.07042757],[0.07141988, 0.07138304]])
+        dW_ans = np.array([[0.02034052, 0.03406927, 0.04068103], [0.02168812, 0.0361155, 0.04337623]])
+        db_ans = np.array([[0.13584404], [0.14454264]])
+
+        assert np.allclose(dA_prev, dA_prev_ans)
+        assert np.allclose(dW, dW_ans)
+        assert np.allclose(db, db_ans)
+
+        # test backward relu
+        A_prev = np.array([(0.1, 0.2), (0.4, 0.1), (0.2, 0.4)])
+        W = np.array([(0.1, 0.2, 0.1), (0.2, 0.3, 0.4)])
+        b = np.array([[0.1], [0.2]])
+        AL, cache = network.linear_activation_forward(A_prev, W, b, "relu")
+        dA_prev, dW, db = network.linear_activation_backward(AL, cache, "relu")
+
+        dA_prev_ans = np.array([[0.105, 0.104], [0.168, 0.165], [0.189, 0.19]])
+        dW_ans = np.array([[0.0285, 0.051, 0.057], [0.064, 0.1055, 0.128]])
+        db_ans = np.array([[0.195], [0.425]])
+
+        assert np.allclose(dA_prev, dA_prev_ans)
+        assert np.allclose(dW, dW_ans)
+        assert np.allclose(db, db_ans)
+
 
 if __name__ == "__main__":
     unittest.main()
